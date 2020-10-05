@@ -147,8 +147,9 @@ class World
 		 */
 	}
 
-	public function placeEntities()
+	public function placeEntities():Bool
 	{
+		var genOk:Bool = true;
 		// Place the player -- find a good place
 		var stopB:Bool = false;
 		for (row in 1...5)
@@ -159,20 +160,22 @@ class World
 				{
 					player.setPosition(col * 16, row * 16);
 					player.setSpawnPos(col * 16, row * 16);
-					stopB = false;
+					stopB = true;
 					break;
 				}
 			}
 			if (stopB)
 				break;
 		}
+		if(!stopB)
+			genOk = false;
 
 
 
 
 
 		// Place the end Cube
-		var stopB:Bool = true;
+		stopB = false;
 
 		var cubePartPos:Int = 4;
 		var regionXSearchStart:Int = FlxG.random.int(1, cubePartPos - 1);
@@ -193,7 +196,7 @@ class World
 						cube.setSpawnPos(collll * 16, rowwwww * 16);
 						cubeCol = collll;
 						cubeRow = rowwwww;
-						stopB = false;
+						stopB = true;
 						break;
 					}
 				}
@@ -201,21 +204,23 @@ class World
 			if (stopB)
 				break;
 		}
+		if(!stopB)
+			genOk = false;
 
 		if (stopB)
 		{
-			for (rowwwww in 15...gridH - 1)
+			for (rowCube in 15...gridH - 1)
 			{
-				for (collll in 1...gridW - 1)
+				for (colCube in 1...gridW - 1)
 				{
-					if (grid[rowwwww][collll] <= 0 && grid[rowwwww][collll - 1] <= 0 && grid[rowwwww][collll + 1] <= 0 && grid[rowwwww - 1][collll] <= 0
-						&& grid[rowwwww + 1][collll] > 0)
+					if (grid[rowCube][colCube] <= 0 && grid[rowCube][colCube - 1] <= 0 && grid[rowCube][colCube + 1] <= 0
+						&& grid[rowCube - 1][colCube] <= 0 && grid[rowCube + 1][colCube] > 0)
 					{
-						cube.setPosition(collll * 16, rowwwww * 16);
-						cube.setSpawnPos(collll * 16, rowwwww * 16);
-						stopB = false;
-						cubeCol = collll;
-						cubeRow = rowwwww;
+						cube.setPosition(colCube * 16, rowCube * 16);
+						cube.setSpawnPos(colCube * 16, rowCube * 16);
+						stopB = true;
+						cubeCol = colCube;
+						cubeRow = rowCube;
 						break;
 					}
 				}
@@ -223,21 +228,25 @@ class World
 					break;
 			}
 		}
+		if(!stopB)
+			genOk = false;
 
-		for (colClear in 0...gridH)
+		for (colClear in -5...6)
 		{
-			grid[cubeRow][colClear] = 0;
+			if (cubeCol + colClear > 0 && cubeCol + colClear < gridW)
+				grid[cubeRow][cubeCol + colClear] = 0;
 		}
 
-		
-		for (rowClear in 0...gridW)
-			{
-				grid[rowClear][cubeCol] = 0;
-			}
+
+		for (rowClear in -5...6)
+		{
+			if (rowClear + cubeRow > 0 && rowClear + cubeRow < gridW)
+				grid[rowClear + cubeRow][cubeCol] = 0;
+		}
 
 
 		// Place the spikes
-		var stopB:Bool = false;
+		stopB = false;
 		// var amountOfSpikes = WorldManager.getInstance().currentOverallLevelNum;
 		var amountOfSpikes:Int = FlxG.random.int(WorldManager.getInstance().currentOverallLevelNum * 5,
 			WorldManager.getInstance().currentOverallLevelNum * 10);
@@ -266,6 +275,7 @@ class World
 
 		FlxG.log.add(cube.x);
 		FlxG.log.add(cube.y);
+		return genOk;
 	}
 
 	public function countAliveCells(gridX:Int, gridY:Int):Int

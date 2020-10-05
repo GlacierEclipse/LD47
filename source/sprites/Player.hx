@@ -84,10 +84,10 @@ class Player extends GameSprite
 		uiClimbBar.trackParent(-7,0);
 
 
-		hurtSound = FlxG.sound.load("assets/sounds/Hit_Hurt.wav", 0.2);
-		jumpSound = FlxG.sound.load("assets/sounds/Jump28.wav", 0.2);
-		landSound = FlxG.sound.load("assets/sounds/HitSnow.wav", 0.2);
-		fireRopeSound = FlxG.sound.load("assets/sounds/Laser_Shoot22.wav", 0.2);
+		hurtSound = FlxG.sound.load("assets/sounds/Hit_Hurt.wav", 0.4);
+		jumpSound = FlxG.sound.load("assets/sounds/Jump28.wav", 0.4);
+		landSound = FlxG.sound.load("assets/sounds/HitSnow.wav", 0.4);
+		fireRopeSound = FlxG.sound.load("assets/sounds/Laser_Shoot22.wav", 0.4);
 		
 	}
 

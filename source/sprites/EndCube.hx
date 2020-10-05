@@ -22,7 +22,7 @@ class EndCube extends GameSprite
         scale.y = 2.0;
         tweenCube = FlxTween.tween(this, {"scale.x": 4.0, "scale.y": 4.0}, 0.9, {ease: FlxEase.bounceInOut, type:PINGPONG});
 
-        cubePick = FlxG.sound.load("assets/sounds/CubePick.wav", 0.2);
+        cubePick = FlxG.sound.load("assets/sounds/CubePick.wav", 0.5);
     }
 
     override function update(elapsed:Float) 

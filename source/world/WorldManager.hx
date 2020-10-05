@@ -59,6 +59,7 @@ class WorldManager
 		restartsForLevel = 0;
 		restartsForWholeGame = 0;
 		currentOverallLevelNum = 1;
+		tutorialMsgs = new GameText(0, 0, 0, "Press E to shoot a light stick, you only have two! \n Press P to Regenerate the world!", 12);
 		clearWorld();
 		init();
 		generateWorld(currentOverallLevelNum);
@@ -83,7 +84,7 @@ class WorldManager
 
 
 
-		tutorialMsgs = new GameText(0, 0, 0, "Press E to shoot a light stick, you only have two! ", 12);
+		
 		tutorialMsgs.scrollFactor.set(0, 0);
 		tutorialMsgs.alpha = 0.0;
 
@@ -124,7 +125,20 @@ class WorldManager
 		var currentDir:FlxPoint = new FlxPoint();
 
 		world.generateGrid();
-		world.placeEntities();
+		var tryRegenLoop : Int = 4;
+		
+		var shouldRegen:Bool = !world.placeEntities();
+		
+		if(shouldRegen)
+		{
+			for (regenL in 0...tryRegenLoop)
+			{
+				world.generateGrid();
+				shouldRegen = !world.placeEntities();
+				if(!shouldRegen)
+					break;
+			}
+		}
 
 		world.initWorldFromGrid();
 		// The currentLevel is going to be the generated stiched level
@@ -236,10 +250,10 @@ class WorldManager
 	public function startTutorial()
 	{
 		var tutDur:Float = 3.0;
-		tutorialTween = FlxTween.tween(tutorialMsgs, {alpha: 1.0}, tutDur, {
+		tutorialTween = FlxTween.tween(tutorialMsgs, {alpha: 1.0}, 5.0, {
 			onComplete: function tut2(_)
 			{
-				tutorialTween = FlxTween.tween(tutorialMsgs, {alpha: 0.0}, tutDur, {
+				tutorialTween = FlxTween.tween(tutorialMsgs, {alpha: 0.0}, 5.0, {
 					onComplete: function aaaaa(_)
 					{
 						tutorialMsgs.text = "Be careful of fall damage!";
@@ -341,6 +355,16 @@ class WorldManager
 				playerTouchedEndCube();
 			}
 		 #end
+
+		if (FlxG.keys.anyJustPressed([P]))
+		{
+			// Fall back for shitty world gen
+
+			clearWorld();
+			init();
+			generateWorld(currentOverallLevelNum);
+		}
+
 		if (embarkScreenActive && FlxG.keys.anyJustPressed([SPACE]))
 		{
 			deActivateEmbarkScreen();
